@@ -16,25 +16,24 @@ import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 
 public class ClientFrame extends JFrame{
-	private JLabel clientLabel = new JLabel("Client Name");
-	private JLabel sendtoLabel = new JLabel( "Send to");
-	private JTextField nameText = new JTextField();
-	private JTextField outputNameText = new JTextField();
-	private JTextArea chatBox = new JTextArea();
-	private JTextArea messageBox = new JTextArea();
+	public JLabel clientLabel = new JLabel("Client Name");
+	public JLabel sendtoLabel = new JLabel( "Send to");
+	public JTextField nameText = new JTextField();
+	public JTextField outputNameText = new JTextField();
+	public JTextArea chatBox = new JTextArea();
+	public JTextArea messageBox = new JTextArea();
 	public JButton connectButton = new JButton("Connect");
 	public JButton sendButton = new JButton("Send");
-	private ClientGenerator runClient = new ClientGenerator();
-	
-	
+	//private ClientGenerator runClient = new ClientGenerator();
+
 	public ClientFrame() {
 		super("Chatting Client"); //gives title
 		setLayout(null); //gives default layout
 		
-		defaultUI();
+		defaultClientUI();
 	}
 	
-	private void defaultUI() {
+	public void defaultClientUI() {
 		setSize(400,400);
 		clientLabel.setBounds(20, 20, 100, 20);
 		add(clientLabel);
@@ -123,8 +122,6 @@ public class ClientFrame extends JFrame{
 	
 
 	public static void main(String[] args) {
-		ClientFrame CF = new ClientFrame();
-	
-	
+		//ClientFrame CF = new ClientFrame();
 	}
 }

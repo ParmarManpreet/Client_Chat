@@ -2,52 +2,71 @@ package clients;
 
 import java.net.*;
 import java.util.Scanner;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 
 public class ClientGenerator{
-    private ClientFrame clientFrame;
+    public  ClientFrame clientFrame;
     private Socket clientSocket;
     private DataOutputStream outputToServer;
     private BufferedReader inputFromServer;
     
     public ClientGenerator() {
-    	clientFrame = new ClientFrame();
-    	clientFrame.setVisible(true);
-    	//startClient();
+    	clientUI();
+    	clickConnect();
     }
 
-	public void startClient() {
-		try {
-		//ip address: 127.0.0.1 ---> loopback ip address
-		//^ when connecting to yourself
-		//when connecting to someone else you have to know their ip address
-		clientSocket = new Socket("localhost",2245);
-		new Thread() {
-			public void run() {
-				while(true) {
-				//send message to the server
-				//DataOutputStream outputToServer;
+	public void clientUI() {
+		clientFrame = new ClientFrame();
+		clientFrame.setVisible(true);
+	}
+
+	public void clickConnect() {
+		clientFrame.connectButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (clientFrame.connectButton.getText().equals("Connect")) {
+					clientFrame.connectButton.setText("Disconnect");						
+					
 					try {
+						clientSocket = new Socket("localhost",2245);
 						//send message to the server
 						outputToServer = new DataOutputStream(clientSocket.getOutputStream());
-						//System.out.print("Client Name: ");
-						Scanner name = new Scanner(System.in);
-						String userName= name.nextLine();
+						//reads message from server
+						inputFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 						//use \n bc we use readline and it looks for new line character
-						String sentence=  userName+ "\n";
-						outputToServer.writeBytes(sentence);
-					} catch (IOException e) {}
+						String clientName= clientFrame.nameText.getText();
+						String clientStatus=  "Connected"+ "\n";
+						outputToServer.writeBytes(clientStatus);
+						
+					}catch(Exception ex) {}
+						
+					new Thread() {
+						public void run() {
+							while(true) {
+							try {
+								String recSentence = inputFromServer.readLine();
+								System.out.println("from server: "+ recSentence);
+								clientFrame.chatBox.append(recSentence + "\n");
+							} catch (IOException e) {}
+							}
+						}
+					}.start();
+	
+				}else {
+					clientFrame.connectButton.setText("Connect");
+					try {
+						System.out.print("in the else loop"+ "\n");
+						String clientStatus=  "Disconnected"+ "\n";
+						outputToServer.writeBytes("Disconnect" +"\n");
+					} catch (Exception ex) {}
 				}
 			}
-		}.start();
-		//reads message from server
-		inputFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-		String recSentence = inputFromServer.readLine();
-		//frame.writeinBox2(recSentence);
-		System.out.println("from server: "+ recSentence);
-    	}catch(Exception ex) {}
-	}
 	
+		});
+	}
+		
 	public void stopClient() {
 		
       try {
