@@ -23,7 +23,6 @@ public class ClientGenerator{
 		clientFrame = new ClientFrame();
 		clientFrame.setVisible(true);
 	}
-	
 
 	public void clickConnect() {
 		clientFrame.connectButton.addActionListener(new ActionListener() {
@@ -73,18 +72,23 @@ public class ClientGenerator{
 		
 		clientFrame.sendButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(clientFrame.outputNameText.getText()!=null) {
+				if(clientFrame.outputNameText.getText().isEmpty()) {
 					String message = clientFrame.messageBox.getText();
 					try {
-						System.out.println("click button");
-						System.out.println("message: "+ message);
 						outputToServer.writeBytes(message+ "\n");
-						System.out.print("sending to server");
 					} catch (IOException e1) {
 					}
+				}else {
+					String receiverName = clientFrame.outputNameText.getText();
+					String message = clientFrame.messageBox.getText();
+					try {
+						String nameAndMessage = receiverName + "," + message;
+						outputToServer.writeBytes("YES" +"," +nameAndMessage+ "\n");
+						System.out.println("name and message says: "+ nameAndMessage);
+					} catch (IOException e1) {}
 				}
 			}
-		});
+		});		
 	}
   
 	public static void main(String[] args) {
